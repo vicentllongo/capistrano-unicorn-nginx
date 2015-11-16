@@ -7,6 +7,7 @@ include Capistrano::DSL::UnicornPaths
 namespace :load do
   task :defaults do
     set :unicorn_service, -> { "unicorn_#{fetch(:application)}_#{fetch(:stage)}" }
+    set :unicorn_service_command, -> { "service #{fetch(:unicorn_service)}" }
     set :templates_path, 'config/deploy/templates'
     set :unicorn_pid, -> { unicorn_default_pid_file }
     set :unicorn_config, -> { unicorn_default_config_file }
@@ -49,7 +50,7 @@ namespace :unicorn do
     desc "#{command} unicorn"
     task command do
       on roles :app do
-        execute :service, fetch(:unicorn_service), command
+        execute fetch(:unicorn_service_command), command
       end
     end
   end
